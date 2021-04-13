@@ -7,9 +7,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ComicApi.Data;
 using ComicApi.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ComicApi.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ComicsController : ControllerBase
