@@ -14,10 +14,12 @@ namespace ComicApi.Data
         }
 
         public DbSet<Comic> Comics { get; set; }
+        public DbSet<Collection> Collections { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Comic>().ToTable("Comic");
+            modelBuilder.Entity<Collection>().ToTable("Collection");
         }
     }
 }

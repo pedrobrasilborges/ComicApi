@@ -12,23 +12,41 @@ namespace ComicApi.Data
         {
             context.Database.EnsureCreated();
 
-            // Look for any students.
-            if (context.Comics.Any())
+            if (!context.Collections.Any())
             {
-                return;   // DB has been seeded
+                var collections = new Collection[]
+                {
+                new Collection{ Name = "DC", CreationDate = DateTime.Parse("2003-09-01") },
+                new Collection{ Name = "Marvel", CreationDate = DateTime.Parse("2005-09-01") },
+                };
+
+                foreach (Collection s in collections)
+                {
+                    context.Collections.Add(s);
+                }
+
+                context.SaveChanges();
+
             }
 
-            var comics = new Comic[]
+            if (!context.Comics.Any())
             {
-            new Comic{Name = "Batman", CreationDate = DateTime.Parse("2002-09-01")},
-            new Comic{Name = "Spider-Man", CreationDate = DateTime.Parse("2003-09-01")},
-            new Comic{Name = "Superman", CreationDate = DateTime.Parse("2005-09-01")},
-            };
-            foreach (Comic s in comics)
-            {
-                context.Comics.Add(s);
+                var comics = new Comic[]
+                {
+                new Comic{Name = "Batman", CreationDate = DateTime.Parse("2002-09-01"), CollectionId = 1},
+                new Comic{Name = "Spider-Man", CreationDate = DateTime.Parse("2003-09-01"), CollectionId = 2},
+                new Comic{Name = "Superman", CreationDate = DateTime.Parse("2005-09-01"), CollectionId = 1},
+                };
+
+                foreach (Comic s in comics)
+                {
+                    context.Comics.Add(s);
+                }
+
+                context.SaveChanges();
+
             }
-            context.SaveChanges();
+
         }
     }
 }
