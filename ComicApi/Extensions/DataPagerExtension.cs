@@ -20,7 +20,7 @@ namespace ComicApi.Extensions
 
             var paged = new PagedModel<TModel>();
 
-            page = (page < 0) ? 1 : page;
+            page = (page <= 0) ? 1 : page;
 
             paged.CurrentPage = page;
             paged.PageSize = limit;

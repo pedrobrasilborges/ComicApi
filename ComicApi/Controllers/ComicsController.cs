@@ -12,6 +12,8 @@ using ComicApi.Dtos;
 using System.Threading;
 using ComicApi.Interfaces;
 using System.Net;
+using ComicApi.Models;
+using ComicApi.Extensions;
 
 namespace ComicApi.Controllers
 {
@@ -29,10 +31,10 @@ namespace ComicApi.Controllers
         }
 
         // GET: api/Comics
-        [HttpGet]
+        [HttpGet(Name=nameof(GetComicsAsync))]
         [ProducesResponseType(typeof(GetComicListResponseDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> GetComics(
+        public async Task<IActionResult> GetComicsAsync(
             [FromQuery] UrlQueryParameters urlQueryParameters,
             CancellationToken cancellationToken)
         {
@@ -46,7 +48,7 @@ namespace ComicApi.Controllers
                                     urlQueryParameters.Page,
                                     cancellationToken);
 
-            return Ok(hobbies);
+            return Ok(GeneratePageLinks(urlQueryParameters, hobbies));
         }
 
         // GET: api/Comics/5
@@ -63,7 +65,28 @@ namespace ComicApi.Controllers
             return comic;
         }
 
+        private GetComicListResponseDto GeneratePageLinks(UrlQueryParameters queryParameters,
+                    GetComicListResponseDto response)
+        {
+            if (response.CurrentPage > 1)
+            {
+                var prevRoute = Url.RouteUrl(nameof(GetComicsAsync), new { limit = queryParameters.Limit, page = queryParameters.Page - 1 });
+
+                response.AddResourceLink(LinkedResourceType.Prev, prevRoute);
+            }
+
+            if (response.CurrentPage < response.TotalPages)
+            {
+                var nextRoute = Url.RouteUrl(nameof(GetComicsAsync), new { limit = queryParameters.Limit, page = queryParameters.Page + 1 });
+
+                response.AddResourceLink(LinkedResourceType.Next, nextRoute);
+            }
+
+            return response;
+        }
     }
 
     public record UrlQueryParameters(int Limit = 50, int Page = 1);
+
+   
 }
