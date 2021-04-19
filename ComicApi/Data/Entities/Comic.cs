@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ComicApi.Models
+namespace ComicApi.Data.Entities
 {
-    public class Collection
+    public class Comic
     {
         public int Id { get; set; }
         public string Name { get; set; }
         public DateTime CreationDate { get; set; }
-        public ICollection<Comic> Comics { get; set; }
+        public int CollectionId { get; set; }
+        public Collection Collection { get; set; }
     }
 }

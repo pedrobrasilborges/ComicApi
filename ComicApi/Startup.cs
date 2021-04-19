@@ -1,5 +1,6 @@
 using ComicApi.Data;
 using ComicApi.Infrastructure;
+using ComicApi.Interfaces;
 using ComicApi.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -17,6 +18,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ComicApi
@@ -57,10 +60,19 @@ namespace ComicApi
             });
             services.AddSingleton<IJwtAuthManager, JwtAuthManager>();
             services.AddHostedService<JwtRefreshTokenCache>();
+            services.AddTransient<IComicService, ComicService>();
             services.AddScoped<IUserService, UserService>();
             services.AddDbContext<BookContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddControllers();
+            services.AddControllers()
+                .AddJsonOptions(ops =>
+                {
+                    ops.JsonSerializerOptions.IgnoreNullValues = true;
+                    ops.JsonSerializerOptions.WriteIndented = true;
+                    ops.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+                    ops.JsonSerializerOptions.DictionaryKeyPolicy = JsonNamingPolicy.CamelCase;
+                    ops.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                });
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ComicApi", Version = "v1" });

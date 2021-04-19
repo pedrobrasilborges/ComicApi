@@ -1,4 +1,4 @@
-﻿using ComicApi.Models;
+﻿using ComicApi.Data.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
